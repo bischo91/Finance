@@ -93,7 +93,7 @@ def find_category_chase_credit(bank_name, desc, cat, amt):
                 cat_spend_chase = 'BC'
         elif 'TARGET' in desc.upper():
             cat_spend_chase = 'Target'
-        elif 'YOGA' in desc.upper() or 'GOLF' in desc.upper():
+        elif ('YOGA' in desc.upper()) or ('GOLF' in desc.upper()):
             cat_spend_chase = 'Gym'
         elif 'FOOD' in cat.upper():
             cat_spend_chase = 'Restaurant'
@@ -101,6 +101,9 @@ def find_category_chase_credit(bank_name, desc, cat, amt):
             cat_spend_chase = 'Merchandise'
         elif 'BILLS' in cat.upper():
             cat_spend_chase = 'Utilities'
+        elif 'SAMS' in desc.upper():
+            if 'Shopping' in cat:
+                cat_spend_chase = 'Grocery'
         else:
             cat_spend_chase = cat
     return cat_spend_chase
