@@ -27,7 +27,6 @@ bank_dic = {'Chase': 2, 'Discover': 2}
 
 def is_float_try(a):
     # check if 'a' is float and return boolean
-
     try:
         float(a)
         return True
@@ -38,7 +37,6 @@ def is_float_try(a):
 
 def which_bank(file_name_input):
     # Determine which bank from file name and return bank name
-
     if 'CHASE' in file_name_input.upper() and '3225' in file_name_input:
         return 'Chase'
     elif 'DISCOVER' in file_name_input.upper() or 'DFS' in file_name_input.upper():
@@ -74,8 +72,11 @@ def find_category_chase(bank_name, desc, amt):
             cat_spend_chase = 'Gasoline'
         elif 'TARGET' in desc.upper():
             cat_spend_chase = 'Target'
-        elif 'YOGA' in desc.upper():
+        elif 'YOGA' in desc.upper() or 'GOLF' in desc.upper():
             cat_spend_chase = 'Gym'
+        elif 'SAMS' in desc.upper():
+            if 'Shopping' in cat:
+                cat_spend_chase = 'Grocery'
         else:
             cat_spend_chase = 'Unknown'
     return cat_spend_chase
@@ -93,7 +94,7 @@ def find_category_chase_credit(bank_name, desc, cat, amt):
                 cat_spend_chase = 'BC'
         elif 'TARGET' in desc.upper():
             cat_spend_chase = 'Target'
-        elif ('YOGA' in desc.upper()) or ('GOLF' in desc.upper()):
+        elif 'YOGA' in desc.upper() or 'GOLF' in desc.upper():
             cat_spend_chase = 'Gym'
         elif 'FOOD' in cat.upper():
             cat_spend_chase = 'Restaurant'
@@ -101,9 +102,6 @@ def find_category_chase_credit(bank_name, desc, cat, amt):
             cat_spend_chase = 'Merchandise'
         elif 'BILLS' in cat.upper():
             cat_spend_chase = 'Utilities'
-        elif 'SAMS' in desc.upper():
-            if 'Shopping' in cat:
-                cat_spend_chase = 'Grocery'
         else:
             cat_spend_chase = cat
     return cat_spend_chase
