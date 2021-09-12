@@ -428,6 +428,7 @@ class Ui_Dialog(QWidget):
         self.cost_cat = [0] * len(self.cat_pool)
         bc_spent = 0
         jl_spent = 0
+        jl_paid = 0
         if self.radiobutton_bank_1.isChecked():
             bank_selected = 'total'
         elif self.radiobutton_bank_2.isChecked():
@@ -440,7 +441,6 @@ class Ui_Dialog(QWidget):
             bank_selected = 'chase credit'
         elif self.radiobutton_bank_6.isChecked():
             bank_selected = 'amex'
-
         for i in range(len(self.cat_pool)):
             if self.checkbox_all[i].isChecked():
                 self.cat_selected.append(self.cat_pool[i])
@@ -450,6 +450,9 @@ class Ui_Dialog(QWidget):
                     total_selected += float(self.amt_comb[j])
                 k = self.cat_pool.index(self.cat_combobox_all[j].currentText())
                 self.cost_cat[k] += float(self.amt_comb[j])
+            if self.bank_comb[j].lower() == 'amex':
+                jl_paid += float(self.amt_comb[j])
+
         for l in range(len(self.cat_pool)):
             if self.cat_pool[l] == "BC":
                 bc_spent = self.cost_cat[l]
@@ -462,27 +465,18 @@ class Ui_Dialog(QWidget):
             self.tableWidget_2.setItem(l, 1, QTableWidgetItem(self.cat_pool[l]))
             self.tableWidget_2.setItem(l, 2, QTableWidgetItem(str("{:.2f}".format(self.cost_cat[l]))))
             self.tableWidget_2.setItem(l, 3, QTableWidgetItem(str("{:.2f}".format(percent))))
-        budget = 2361.47
-        saving = budget - (self.total_spend - bc_spent - jl_spent)
-        # bc = 333.03 - BC_spent
-        bc = saving/2 + 333.03
-        jl_total = bc
-        bc_total = bc + 1177.37
-        extra_print = "\n                         "
-        if saving < 0:
-            extra_print = extra_print + "- $" + str("{:.2f}".format(-saving))
-        else:
-            extra_print = extra_print + "+ $" + str("{:.2f}".format(saving))
-        # "Monthly Income: $4204.90 \n
-        self.label_4.setText("Selected Spending: $" + str("{:.2f}".format(total_selected)) \
-                             +"\n\nBudget:            + $2361.47" \
-                             + "\n  Spending:         - $" + str("{:.2f}".format(self.total_spend - bc_spent - jl_spent)) \
-                             + "\n-----------------------------------"
-                             + extra_print \
-                             + "\n\n\nBrian's spending: $" + str("{:.2f}".format(bc_spent)) \
-                             + "\nBrian receives $" + str("{:.2f}".format(bc_total - bc_spent))
-                             +"\n\nJessica's spending: $" + str("{:.2f}".format(jl_spent))
-                             +"\nJessica receives $" + str("{:.2f}".format(jl_total - jl_spent)))
+
+        bc_paid = self.total_spend - jl_paid
+        income_ratio_bc = 56745/(56745+63110.64)
+        income_ratio_jl = 63110.64/(56745+63110.64)
+
+        jl_owe_bc = bc_paid - bc_spent - (self.total_spend-bc_spent-jl_spent)*income_ratio_bc
+
+        self.label_4.setText("Total Spending: $" + str("{:.2f}".format(self.total_spend)) \
+                             + "\nSelected Spending: $" + str("{:.2f}".format(total_selected)) \
+                             + "\n\n\nBrian paid: $" + str("{:.2f}".format(bc_paid)) \
+                             + "\nJessica paid: $" + str("{:.2f}".format(jl_paid)) \
+                             + "\n\nJessica owes Brian $" + str("{:.2f}".format(jl_owe_bc)))
         self.tableWidget_2.resizeColumnsToContents()
         if total_selected > 0:
             self.plot_graph()
